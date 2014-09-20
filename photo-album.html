@@ -38,7 +38,7 @@ A photo album element including a slideshow view.
     <div id="slideshow">
       <div id="slides">
         <template repeat="{{ galleryModel }}">
-          <div class="slide" style="background-image: url( {{ src }} );"></div>
+          <div class="slide" data-src="{{ src }}"></div>
         </template>
       </div>
       <div id="header" horizontal end-justified layout>
@@ -90,6 +90,7 @@ A photo album element including a slideshow view.
           this.goToSlide(slide);
         },
         goToSlide: function(slide) {
+          this._lazyLoad( slide );
           this._currentSlide = slide;
           this._pixelOffset = this._currentSlide * -this.$.slideshow.clientWidth;
           this._translate( this._pixelOffset );
@@ -122,6 +123,24 @@ A photo album element including a slideshow view.
           this.ownerDocument.addEventListener('keyup', this.keypress.bind( this ) );
           window.addEventListener('resize', this.resize.bind( this ) );
           this._buildModel();
+        },
+
+        _lazyLoad: function( slideIndex ) {
+          var el;
+          var slides = this.$.slides.querySelectorAll('.slide');
+          this._setElementBackground( slides[ slideIndex ] );
+          if ( slideIndex > 0 ) {
+            this._setElementBackground( slides[ slideIndex - 1 ] );
+          }
+          if ( slideIndex < this.galleryModel.length - 1 ) {
+            this._setElementBackground( slides[ slideIndex + 1] );
+          }
+        },
+
+        _setElementBackground: function( element ) {
+          if ( !element.style.backgroundImage ) {
+            element.style.backgroundImage = 'url(' + element.dataset.src + ')';
+          }
         },
 
         _buildModel: function() {
@@ -209,6 +228,7 @@ A photo album element including a slideshow view.
         },
 
         slideEnd: function(event) {
+          var slideIndex;
           event.preventDefault();
           if ( event.touches ) {
             event = event.touches[0];
@@ -220,15 +240,14 @@ A photo album element including a slideshow view.
           if (this._sliding == 2) {
             this._sliding = 0;
             if ( this._pixelOffset < this._startPixelOffset ) {
-              this._currentSlide = this._currentSlide + 1;
+              slideIndex = this._currentSlide + 1;
             }
             else {
-              this._currentSlide = this._currentSlide - 1;
+              slideIndex = this._currentSlide - 1;
             }
-            this._currentSlide = Math.min( Math.max( this._currentSlide, 0 ), this.galleryModel.length - 1 );
-            this._pixelOffset = this._currentSlide * -this.$.slideshow.clientWidth;
+            slideIndex = Math.min( Math.max( slideIndex, 0 ), this.galleryModel.length - 1 );
             this._animate();
-            this._translate( this._pixelOffset );
+            this.goToSlide( slideIndex );
           }
         },
 
