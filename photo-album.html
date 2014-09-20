@@ -8,7 +8,14 @@ A photo album element including a slideshow view.
 
 ##### Example
 
-    <photo-album></photo-album>
+    <photo-album>
+      <photo-album-photo
+        thumbnail="/path/to/thumbnail"
+        src="/path/to/full/image"
+        caption="Image title">
+      </photo-album-photo>
+      <!&#8208;&#8208; repeat photo-album-photo for each photo &#8208;&#8208;>
+    </photo-album>
 
 @element photo-album
 @blurb A photo album element including a slideshow view.
