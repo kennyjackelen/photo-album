@@ -1,0 +1,280 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../core-icons/core-icons.html">
+<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../font-roboto/roboto.html">
+<link rel="import" href="photo-album-photo.html">
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <photo-album></photo-album>
+
+@element photo-album
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/seed-element
+-->
+
+<polymer-element name="photo-album"  attributes="">
+  <template>
+    <link rel="stylesheet" href="photo-album.css">
+    <div id="gallery" horizontal center-justified layout wrap>
+      <template repeat="{{ galleryModel }}">
+        <img class="thumbnail"
+             src="{{ thumbnail }}"
+             title="{{ caption }}"
+             on-tap="{{ thumbnailClicked }}"
+             on-click="{{ thumbnailClicked }}">
+      </template>
+    </div>
+    <div id="slideshow">
+      <div id="slides">
+        <template repeat="{{ galleryModel }}">
+          <div class="slide" style="background-image: url( {{ src }} );"></div>
+        </template>
+      </div>
+      <div id="header" horizontal end-justified layout>
+        <paper-fab id="openButton"
+                   class="mini" icon="launch"
+                   on-click="{{ openInNewTab }}"></paper-fab>
+        <paper-fab id="closeButton"
+                   class="mini" icon="close"
+                   on-click="{{ dismiss }}"></paper-fab>
+      </div>
+      <div id="footer">{{ galleryModel[_currentSlide].caption }}</div>
+    </div>
+  </template>
+  <script>
+    (function () {
+      'use strict';
+
+      Polymer({
+        ready: function() {
+          this.onMutation(this, this.childrenUpdated);
+        },
+        childrenUpdated: function(observer, mutations) {
+          this._buildModel();
+          this.onMutation(this, this.childrenUpdated);
+        },
+        thumbnailClicked: function(e, detail, sender) {
+          this.launch( sender.templateInstance.model.index );
+        },
+        toggle: function() {
+          if ( this._visible ) {
+            this.hide();
+          }
+          else {
+            this.show();
+          }
+        },
+        show: function() {
+          this._visible = true;
+          this.$.slideshow.style.display = 'block';
+          this._showControls();
+        },
+        hide: function() {
+          this._visible = false;
+          this.$.slideshow.style.display = 'none';
+        },
+        launch: function(slide) {
+          this.show();
+          this._noAnimate();
+          this.goToSlide(slide);
+        },
+        goToSlide: function(slide) {
+          this._currentSlide = slide;
+          this._pixelOffset = this._currentSlide * -this.$.slideshow.clientWidth;
+          this._translate( this._pixelOffset );
+        },
+        prevSlide: function() {
+          if ( this._currentSlide > 0 ) {
+            this._animate();
+            this.goToSlide( this._currentSlide - 1 );
+          }
+        },
+        nextSlide: function() {
+          if ( this._currentSlide < this.galleryModel.length - 1 ) {
+            this._animate();
+            this.goToSlide( this._currentSlide + 1 );
+          }
+        },
+        domReady: function() {
+          this._sliding = 0;
+          this._startClientX = 0;
+          this._startClientY = 0;
+          this._startPixelOffset = 0;
+          this._pixelOffset = 0;
+          this._currentSlide = 0;
+          this.$.slideshow.addEventListener('mousedown', this.slideStart.bind( this ) );
+          this.$.slideshow.addEventListener('touchstart', this.slideStart.bind( this ) );
+          this.$.slideshow.addEventListener('mouseup', this.slideEnd.bind( this ) );
+          this.$.slideshow.addEventListener('touchend', this.slideEnd.bind( this ) );
+          this.$.slideshow.addEventListener('mousemove', this.slide.bind( this ) );
+          this.$.slideshow.addEventListener('touchmove', this.slide.bind( this ) );
+          this.ownerDocument.addEventListener('keyup', this.keypress.bind( this ) );
+          window.addEventListener('resize', this.resize.bind( this ) );
+          this._buildModel();
+        },
+
+        _buildModel: function() {
+          var child, len, i, slide;
+          this.galleryModel = [];
+          len = this.children.length;
+          for ( i=0; i<len; i++ ) {
+            child = this.children.item( i );
+            if ( child.tagName === 'PHOTO-ALBUM-PHOTO' ) {
+              slide = {};
+              slide.index = i;
+              slide.src = child.src;
+              slide.thumbnail = child.thumbnail;
+              slide.caption = child.caption;
+              this.galleryModel.push( slide );
+            }
+          }
+        },
+
+        dismiss: function(event) {
+          if ( this._visible ) {
+            this.toggle();
+          }
+        },
+
+        openInNewTab: function( e, detail, sender ) {
+          window.open( this.galleryModel[ this._currentSlide ].src, '_blank' );
+        },
+
+        keypress: function(event) {
+          if ( this._visible ) {
+            if ( event.keyCode === 27 ) {
+              this.toggle();
+            }
+            if ( event.keyCode === 37 ) {
+              // left arrow
+              this.prevSlide();
+            }
+            if ( event.keyCode === 39 ) {
+              // right arrow
+              this.nextSlide();
+            }
+          }
+        },
+
+        resize: function(event) {
+          this._noAnimate();
+          this.goToSlide( this._currentSlide );
+        },
+
+        slideStart: function(event) {
+          event.preventDefault();
+          if ( event.touches ) {
+            event = event.touches[0];
+          }
+          if (this._sliding == 0) {
+            this._sliding = 1;
+            this._startClientX = event.clientX;
+            this._startClientY = event.clientY;
+          }
+        },
+
+        slide: function(event) {
+          event.preventDefault();
+          if ( event.touches ) {
+            event = event.touches[0];
+          }
+          var deltaSlide = event.clientX - this._startClientX;
+
+          if (this._sliding == 1 && deltaSlide != 0) {
+            this._sliding = 2;
+            this._startPixelOffset = this._pixelOffset;
+          }
+
+          if (this._sliding == 2) {
+            var touchPixelRatio = 1;
+            if ((this._currentSlide == 0 && event.clientX > this._startClientX) ||
+                (this._currentSlide == this.galleryModel.length - 1 && event.clientX < this._startClientX)) {
+              touchPixelRatio = 3;
+            }
+            this._pixelOffset = this._startPixelOffset + deltaSlide / touchPixelRatio;
+            this._noAnimate();
+            this._translate( this._pixelOffset );
+          }
+        },
+
+        slideEnd: function(event) {
+          event.preventDefault();
+          if ( event.touches ) {
+            event = event.touches[0];
+          }
+          if (this._sliding == 1) {
+            this._sliding = 0;
+            this._toggleControls();
+          }
+          if (this._sliding == 2) {
+            this._sliding = 0;
+            if ( this._pixelOffset < this._startPixelOffset ) {
+              this._currentSlide = this._currentSlide + 1;
+            }
+            else {
+              this._currentSlide = this._currentSlide - 1;
+            }
+            this._currentSlide = Math.min( Math.max( this._currentSlide, 0 ), this.galleryModel.length - 1 );
+            this._pixelOffset = this._currentSlide * -this.$.slideshow.clientWidth;
+            this._animate();
+            this._translate( this._pixelOffset );
+          }
+        },
+
+        _toggleControls: function() {
+          if ( this._showingControls ) {
+            this._hideControls();
+          }
+          else {
+            this._showControls();
+          }
+        },
+
+        _showControls: function() {
+          this.$.header.style.opacity = '1.0';
+          this.$.footer.style.opacity = '1.0';
+          this.$.closeButton.disabled = false;
+          this._showingControls = true;
+        },
+
+        _hideControls: function() {
+          this.$.header.style.opacity = '0';
+          this.$.footer.style.opacity = '0';
+          this.$.closeButton.disabled = true;
+          this._showingControls = false;
+        },
+
+        _translate: function(xOffset) {
+          this.$.slides.style.transform = 'translate3d(' + xOffset + 'px, 0, 0)';
+          this.$.slides.style.OTransform = 'translate3d(' + xOffset + 'px, 0, 0)';          // Opera
+          this.$.slides.style.msTransform = 'translate3d(' + xOffset + 'px, 0, 0)';         // IE 9
+          this.$.slides.style.MozTransform = 'translate3d(' + xOffset + 'px, 0, 0)';        // Firefox
+          this.$.slides.style.WebkitTransform = 'translate3d(' + xOffset + 'px, 0, 0)';     // Safari and Chrome
+        },
+
+        _animate: function() {
+          this.$.slides.style.transition = 'all .3s ease-out';
+          this.$.slides.style.OTransition = 'all .3s ease-out';          // Opera
+          this.$.slides.style.msTransition = 'all .3s ease-out';         // IE 9
+          this.$.slides.style.MozTransition = 'all .3s ease-out';        // Firefox
+          this.$.slides.style.WebkitTransition = 'all .3s ease-out';     // Safari and Chrome
+        },
+
+        _noAnimate: function(){
+          this.$.slides.style.transition = '';
+          this.$.slides.style.OTransition = '';          // Opera
+          this.$.slides.style.msTransition = '';         // IE 9
+          this.$.slides.style.MozTransition = '';        // Firefox
+          this.$.slides.style.WebkitTransition = '';     // Safari and Chrome
+        }
+
+      });
+
+    })();
+  </script>
+</polymer-element>
+

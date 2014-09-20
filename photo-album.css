@@ -1,0 +1,85 @@
+/* Shadow DOM CSS Cheat Sheet */
+/* http://robdodson.me/blog/2014/04/10/shadow-dom-css-cheat-sheet */
+
+/* styles for the custom element itself - lowest specificity */
+:host {
+  display: block;
+  font-family: RobotoDraft;
+}
+
+#closeButton, #openButton {
+  background-color: #333333;
+  float: right;
+  margin: 16px;
+}
+
+#header, #footer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  text-align: center;
+  color: #EEE;
+  line-height: 2em;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
+#header {
+  top: 0;
+}
+
+#footer {
+  background: rgba(0,0,0,0.5);
+  bottom: 0;
+}
+
+.thumbnail {
+  cursor: pointer;
+  margin: 4px;
+}
+
+#slideshow {
+  z-index: 100;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: none;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #333;
+  background: rgba(0,0,0,0.8);
+}
+
+#slides {  
+  width: 100%; height: 100%;
+  white-space: nowrap;
+  font-size: 0;
+  -webkit-transform: translate3d(0,0,0);
+  -moz-transform: translate3d(0,0,0);
+  -ms-transform: translate3d(0,0,0);
+  -o-transform: translate3d(0,0,0);
+  transform: translate3d(0,0,0);
+}
+
+.slide {
+  width: 100%; height: 100%;
+  display: inline-block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.animate {
+  -webkit-transition: all .3s ease-out;
+  -moz-transition: all .3s ease-out;
+  -ms-transition: all .3s ease-out;
+  -o-transition: all .3s ease-out;
+  transition: all .3s ease-out;
+}
