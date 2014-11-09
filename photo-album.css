@@ -32,6 +32,11 @@
   top: 0;
 }
 
+#header paper-fab {
+  /* https://github.com/Polymer/paper-fab/issues/13 - should be resolved in 0.4.3 */
+  line-height: 1;
+}
+
 #footer {
   background: rgba(0,0,0,0.5);
   bottom: 0;
