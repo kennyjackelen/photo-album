@@ -5,7 +5,7 @@
     "Kenny Jackelen <kenny@kennyjackelen.com>"
   ],
   "description": "A photo album element including a slideshow view.",
-  "keywords": "polymer, web-components",
+  "keywords": ["polymer", "web-components"],
   "main": "album-gallery.html",
   "license": "MIT",
   "homepage": "https://github.com/kennyjackelen/photo-album/",
