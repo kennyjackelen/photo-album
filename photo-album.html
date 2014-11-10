@@ -44,9 +44,11 @@ A photo album element including a slideshow view.
       <div id="header" horizontal end-justified layout>
         <paper-fab id="openButton"
                    class="mini" icon="launch"
+                   on-tap="{{ openInNewTab }}"
                    on-click="{{ openInNewTab }}"></paper-fab>
         <paper-fab id="closeButton"
                    class="mini" icon="close"
+                   on-tap="{{ dismiss }}"
                    on-click="{{ dismiss }}"></paper-fab>
       </div>
       <div id="footer">{{ galleryModel[_currentSlide].caption }}</div>
@@ -77,6 +79,7 @@ A photo album element including a slideshow view.
         },
         show: function() {
           this._visible = true;
+          this._sliding == 0;
           this.$.slideshow.style.display = 'block';
           this._showControls();
         },
@@ -192,6 +195,9 @@ A photo album element including a slideshow view.
         },
 
         slideStart: function(event) {
+          if ( !this._visible ) {
+            return;
+          }
           event.preventDefault();
           if ( event.touches ) {
             event = event.touches[0];
@@ -204,6 +210,9 @@ A photo album element including a slideshow view.
         },
 
         slide: function(event) {
+          if ( !this._visible ) {
+            return;
+          }
           event.preventDefault();
           if ( event.touches ) {
             event = event.touches[0];
@@ -229,6 +238,9 @@ A photo album element including a slideshow view.
 
         slideEnd: function(event) {
           var slideIndex;
+          if ( !this._visible ) {
+            return;
+          }
           event.preventDefault();
           if ( event.touches ) {
             event = event.touches[0];
@@ -263,6 +275,7 @@ A photo album element including a slideshow view.
         _showControls: function() {
           this.$.header.style.opacity = '1.0';
           this.$.footer.style.opacity = '1.0';
+          this.$.openButton.disabled = false;
           this.$.closeButton.disabled = false;
           this._showingControls = true;
         },
@@ -270,6 +283,7 @@ A photo album element including a slideshow view.
         _hideControls: function() {
           this.$.header.style.opacity = '0';
           this.$.footer.style.opacity = '0';
+          this.$.openButton.disabled = false;
           this.$.closeButton.disabled = true;
           this._showingControls = false;
         },
