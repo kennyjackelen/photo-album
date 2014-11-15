@@ -44,22 +44,18 @@ A photo album element including a slideshow view.
       <div id="header" horizontal end-justified layout>
         <paper-fab id="openButton"
                    mini icon="launch"
-                   on-tap="{{ openInNewTab }}"
-                   on-click="{{ openInNewTab }}"></paper-fab>
+                   on-tap="{{ openInNewTab }}"></paper-fab>
         <paper-fab id="closeButton"
                    mini icon="close"
-                   on-tap="{{ dismiss }}"
-                   on-click="{{ dismiss }}"></paper-fab>
+                   on-tap="{{ dismiss }}"></paper-fab>
       </div>
       <div id="footer">{{ galleryModel[_currentSlide].caption }}</div>
       <paper-fab id="prevSlide"
                  mini icon="arrow-back"
-                 on-tap="{{ prevSlide }}"
-                 on-click="{{ prevSlide }}"></paper-fab>
+                 on-tap="{{ prevSlide }}"></paper-fab>
       <paper-fab id="nextSlide"
                  mini icon="arrow-forward"
-                 on-tap="{{ nextSlide }}"
-                 on-click="{{ nextSlide }}"></paper-fab>
+                 on-tap="{{ nextSlide }}"></paper-fab>
     </div>
   </template>
   <script>
@@ -141,12 +137,12 @@ A photo album element including a slideshow view.
           this._startPixelOffset = 0;
           this._pixelOffset = 0;
           this._currentSlide = 0;
-          this.$.slideshow.addEventListener('mousedown', this.slideStart.bind( this ) );
-          this.$.slideshow.addEventListener('touchstart', this.slideStart.bind( this ) );
-          this.$.slideshow.addEventListener('mouseup', this.slideEnd.bind( this ) );
-          this.$.slideshow.addEventListener('touchend', this.slideEnd.bind( this ) );
-          this.$.slideshow.addEventListener('mousemove', this.slide.bind( this ) );
-          this.$.slideshow.addEventListener('touchmove', this.slide.bind( this ) );
+          this.$.slides.addEventListener('mousedown', this.slideStart.bind( this ) );
+          this.$.slides.addEventListener('touchstart', this.slideStart.bind( this ) );
+          this.$.slides.addEventListener('mouseup', this.slideEnd.bind( this ) );
+          this.$.slides.addEventListener('touchend', this.slideEnd.bind( this ) );
+          this.$.slides.addEventListener('mousemove', this.slide.bind( this ) );
+          this.$.slides.addEventListener('touchmove', this.slide.bind( this ) );
           this.ownerDocument.addEventListener('keyup', this.keypress.bind( this ) );
           window.addEventListener('resize', this.resize.bind( this ) );
           this._buildModel();
