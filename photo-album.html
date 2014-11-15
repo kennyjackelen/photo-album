@@ -52,6 +52,14 @@ A photo album element including a slideshow view.
                    on-click="{{ dismiss }}"></paper-fab>
       </div>
       <div id="footer">{{ galleryModel[_currentSlide].caption }}</div>
+      <paper-fab id="prevSlide"
+                 mini icon="arrow-back"
+                 on-tap="{{ prevSlide }}"
+                 on-click="{{ prevSlide }}"></paper-fab>
+      <paper-fab id="nextSlide"
+                 mini icon="arrow-forward"
+                 on-tap="{{ nextSlide }}"
+                 on-click="{{ nextSlide }}"></paper-fab>
     </div>
   </template>
   <script>
@@ -85,11 +93,15 @@ A photo album element including a slideshow view.
         },
         hide: function() {
           this._visible = false;
+          this.$.prevSlide.style.left = -this.$.prevSlide.clientWidth + 'px';
+          this.$.nextSlide.style.right = -this.$.nextSlide.clientWidth + 'px';
           this.$.slideshow.style.display = 'none';
         },
         launch: function(slide) {
-          this.show();
           this._noAnimate();
+          this.show();
+          this.$.prevSlide.style.left = -this.$.prevSlide.clientWidth + 'px';
+          this.$.nextSlide.style.right = -this.$.nextSlide.clientWidth + 'px';
           this.goToSlide(slide);
         },
         goToSlide: function(slide) {
@@ -97,6 +109,18 @@ A photo album element including a slideshow view.
           this._currentSlide = slide;
           this._pixelOffset = this._currentSlide * -this.$.slideshow.clientWidth;
           this._translate( this._pixelOffset );
+          if ( this._currentSlide === 0 ) {
+            this.$.prevSlide.style.left = -this.$.prevSlide.clientWidth + 'px';
+          }
+          else {
+            this.$.prevSlide.style.left = '8px';
+          }
+          if ( this._currentSlide === this.galleryModel.length - 1 ) {
+            this.$.nextSlide.style.right = -this.$.nextSlide.clientWidth + 'px';
+          }
+          else {
+            this.$.nextSlide.style.right = '8px';
+          }
         },
         prevSlide: function() {
           if ( this._currentSlide > 0 ) {

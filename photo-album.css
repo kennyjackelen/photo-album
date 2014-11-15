@@ -7,6 +7,17 @@
   font-family: RobotoDraft;
 }
 
+#prevSlide, #nextSlide {
+  position: fixed;
+  background-color: #333333;
+  top:  calc( 50% - 28px ) ;  /* button is 56 high */
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -ms-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+}
+
 #closeButton, #openButton {
   background-color: #333333;
   float: right;
@@ -21,11 +32,6 @@
   text-align: center;
   color: #EEE;
   line-height: 2em;
-  -webkit-transition: all .3s ease-in-out;
-  -moz-transition: all .3s ease-in-out;
-  -ms-transition: all .3s ease-in-out;
-  -o-transition: all .3s ease-in-out;
-  transition: all .3s ease-in-out;
 }
 
 #header {
