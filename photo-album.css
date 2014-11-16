@@ -7,8 +7,23 @@
   font-family: RobotoDraft;
 }
 
-.slide paper-spinner {
+.thumbnails-loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -14px;   /* Adjust if CONTAINERWIDTH in paper-spinner.css changes */
+  margin-left: -14px;  /* 14px is half of CONTAINERWIDTH */
+}
+
+.slide-loading {
+  z-index: 101;
   position: relative;
+  top: 50%;
+  left: 50%;
+  margin-top: -14px;
+  margin-left: -14px;
+  margin-top: -14px;   /* Adjust if CONTAINERWIDTH in paper-spinner.css changes */
+  margin-left: -14px;  /* 14px is half of CONTAINERWIDTH */
 }
 
 #prevSlide, #nextSlide {
