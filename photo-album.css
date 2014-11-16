@@ -7,6 +7,10 @@
   font-family: RobotoDraft;
 }
 
+.slide paper-spinner {
+  position: relative;
+}
+
 #prevSlide, #nextSlide {
   position: fixed;
   background-color: #333333;

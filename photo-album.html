@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../core-icons/core-icons.html">
 <link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="photo-album-photo.html">
 <!--
@@ -27,8 +28,9 @@ A photo album element including a slideshow view.
   <template>
     <link rel="stylesheet" href="photo-album.css">
     <div id="gallery" horizontal center-justified layout wrap>
+      <paper-spinner active></paper-spinner>
       <template repeat="{{ galleryModel }}">
-        <img class="thumbnail"
+        <img class="thumbnail" hidden
              src="{{ thumbnail }}"
              title="{{ caption }}"
              on-tap="{{ thumbnailClicked }}"
@@ -38,7 +40,9 @@ A photo album element including a slideshow view.
     <div id="slideshow">
       <div id="slides">
         <template repeat="{{ galleryModel }}">
-          <div class="slide" data-src="{{ src }}"></div>
+          <div class="slide" data-src="{{ src }}">
+            <paper-spinner></paper-spinner>
+          </div>
         </template>
       </div>
       <div id="header" horizontal end-justified layout>
@@ -146,6 +150,27 @@ A photo album element including a slideshow view.
           this.ownerDocument.addEventListener('keyup', this.keypress.bind( this ) );
           window.addEventListener('resize', this.resize.bind( this ) );
           this._buildModel();
+          this._loadThumbnails();
+        },
+
+        _loadThumbnails: function() {
+          for ( var i in this.galleryModel ) {
+            var img = new Image();
+            var thumbnails;
+            this._thumbnailsLoaded = 0;
+            img.onload = (function() {
+              this._thumbnailsLoaded++;
+              if (this._thumbnailsLoaded >= this.galleryModel.length ) {
+                this._spin( this.$.gallery, false );
+                thumbnails = this.$.gallery.querySelectorAll('.thumbnail');
+                for ( var i = 0; i < thumbnails.length; i++ ) {
+                  thumbnails[ i ].hidden = false;
+                }
+              }
+            }).bind( this );
+            img.onerror = img.onload;
+            img.src = this.galleryModel[ i ].thumbnail;
+          }
         },
 
         _lazyLoad: function( slideIndex ) {
@@ -162,8 +187,27 @@ A photo album element including a slideshow view.
 
         _setElementBackground: function( element ) {
           if ( !element.style.backgroundImage ) {
-            element.style.backgroundImage = 'url(' + element.dataset.src + ')';
+            this._spin( element, true );
+            var img = new Image();
+            img.onload = (function( element ) {
+              element.style.backgroundImage = 'url(' + element.dataset.src + ')';
+              this._spin( element, false );
+            }).bind( this, element );
+            img.onerror = img.onload;
+            img.src = element.dataset.src;
           }
+        },
+
+        _spin: function( element, active ) {
+          var spinner;
+          spinner = element.getElementsByTagName('PAPER-SPINNER')[0];
+          if ( active ) {
+            spinner.style.left = (this.$.slideshow.clientWidth / 2) - (spinner.clientWidth / 2) + 'px';
+            spinner.style.top = (this.$.slideshow.clientHeight / 2) - (spinner.clientHeight / 2) + 'px';
+            var slideshowWidth = this.$.slideshow.clientWidth
+          }
+          spinner.active = active;
+          spinner.hidden = !active; // otherwise it still takes up space in the document
         },
 
         _buildModel: function() {
