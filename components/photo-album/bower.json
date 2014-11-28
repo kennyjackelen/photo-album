@@ -1,0 +1,29 @@
+{
+  "name": "photo-album",
+  "version": "0.5.0",
+  "authors": [
+    "Kenny Jackelen <kenny@kennyjackelen.com>"
+  ],
+  "description": "A photo album element including a slideshow view.",
+  "keywords": [
+    "polymer",
+    "web-components"
+  ],
+  "main": "album-gallery.html",
+  "license": "MIT",
+  "homepage": "https://github.com/kennyjackelen/photo-album/",
+  "ignore": [
+    "**/.*",
+    "test",
+    "tests",
+    ".bowerrc"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.0",
+    "polymer-test-tools": "Polymer/polymer-test-tools#^0.5.0",
+    "core-icons": "polymer/core-icons#^0.5.0",
+    "paper-fab": "polymer/paper-fab#^0.5.0",
+    "font-roboto": "polymer/font-roboto#^0.5.0",
+    "paper-spinner": "polymer/paper-spinner#^0.5.0"
+  }
+}

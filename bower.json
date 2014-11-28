@@ -1,0 +1,7 @@
+{
+  "name": "photo-album#gh-pages",
+  "private": true,
+  "dependencies": {
+    "photo-album": "kennyjackelen/photo-album#master"
+  }
+}
