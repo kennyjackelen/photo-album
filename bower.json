@@ -19,11 +19,14 @@
     ".bowerrc"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#^0.5.0",
-    "polymer-test-tools": "Polymer/polymer-test-tools#^0.5.0",
-    "core-icons": "polymer/core-icons#^0.5.0",
-    "paper-fab": "polymer/paper-fab#^0.5.0",
-    "font-roboto": "polymer/font-roboto#^0.5.0",
-    "paper-spinner": "polymer/paper-spinner#^0.5.0"
+    "polymer": "Polymer/polymer#^1.2.0",
+    "iron-icons": "PolymerElements/iron-icons#~1.0.6",
+    "paper-fab": "PolymerElements/paper-fab#~1.1.2",
+    "paper-spinner": "PolymerElements/paper-spinner#~1.1.0",
+    "font-roboto": "PolymerElements/font-roboto#~1.0.1"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "^3.4.0"
   }
 }
