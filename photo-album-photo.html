@@ -1,16 +1,21 @@
 <link rel="import" href="../polymer/polymer.html">
 
-<polymer-element name="photo-album-photo"  attributes="src thumbnail caption">
+<dom-module id="photo-album-photo">
+  <link rel="import" type="css" href="photo-album-photo.css">
   <template>
-    <link rel="stylesheet" href="photo-album-photo.css">
     <content></content>
   </template>
   <script>
     (function () {
       'use strict';
-
-      Polymer({});
-
-    })();
+      Polymer({
+        is: 'photo-album-photo',
+        properties: {
+          caption: { notify: true },
+          src: { notify: true },
+          thumbnail: { notify: true }
+        }
+      });
+    }());
   </script>
-</polymer-element>
+</dom-module>
