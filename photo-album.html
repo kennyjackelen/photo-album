@@ -30,7 +30,7 @@ A photo album element including a slideshow view.
     <paper-spinner class="thumbnails-loading"
                   active?="{{ !allThumbnailsLoaded }}"></paper-spinner>
     <div id="gallery" horizontal center-justified layout wrap>
-      <template repeat="{{ galleryModel as slide }}">
+      <template repeat="{{ slide in galleryModel }}">
         <img class="thumbnail" hidden?="{{ !allThumbnailsLoaded }}"
              src="{{ slide.thumbnail }}"
              title="{{ slide.caption }}"
