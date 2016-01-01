@@ -326,35 +326,36 @@ A photo album element including a slideshow view.
         },
         _translate: function (xOffset) {
           this.set('$.slides.style.transform', 'translate3d(' + xOffset + 'px, 0, 0)');
-          this.set('$.slides.style.OTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
           // Opera
-          this.set('$.slides.style.msTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
+          this.set('$.slides.style.OTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
           // IE 9
-          this.set('$.slides.style.MozTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
+          this.set('$.slides.style.msTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
           // Firefox
+          this.set('$.slides.style.MozTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
+          // Safari and Chrome
           this.set('$.slides.style.WebkitTransform', 'translate3d(' + xOffset + 'px, 0, 0)');
         },
-        // Safari and Chrome
         _animate: function () {
           this.set('$.slides.style.transition', 'all .3s ease-out');
-          this.set('$.slides.style.OTransition', 'all .3s ease-out');
           // Opera
-          this.set('$.slides.style.msTransition', 'all .3s ease-out');
+          this.set('$.slides.style.OTransition', 'all .3s ease-out');
           // IE 9
-          this.set('$.slides.style.MozTransition', 'all .3s ease-out');
+          this.set('$.slides.style.msTransition', 'all .3s ease-out');
           // Firefox
+          this.set('$.slides.style.MozTransition', 'all .3s ease-out');
+          // Safari and Chrome
           this.set('$.slides.style.WebkitTransition', 'all .3s ease-out');
         },
-        // Safari and Chrome
         _noAnimate: function () {
           this.set('$.slides.style.transition', '');
-          this.set('$.slides.style.OTransition', '');
           // Opera
-          this.set('$.slides.style.msTransition', '');
+          this.set('$.slides.style.OTransition', '');
           // IE 9
-          this.set('$.slides.style.MozTransition', '');
+          this.set('$.slides.style.msTransition', '');
           // Firefox
-          this.set('$.slides.style.WebkitTransition', '');  // Safari and Chrome
+          this.set('$.slides.style.MozTransition', '');
+          // Safari and Chrome
+          this.set('$.slides.style.WebkitTransition', '');
         },
         _computeExpression1: function (_currentSlide, galleryModel) {
           return galleryModel[_currentSlide].caption;
