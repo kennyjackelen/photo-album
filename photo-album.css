@@ -4,7 +4,7 @@
 /* styles for the custom element itself - lowest specificity */
 :host {
   display: block;
-  font-family: RobotoDraft;
+  font-family: Roboto;
 }
 
 .thumbnails-loading {
