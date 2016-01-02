@@ -1,6 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../paper-fab/paper-fab.html">
+<link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-spinner/paper-spinner.html">
 <link rel="import" href="../font-roboto/roboto.html">
 <link rel="import" href="photo-album-photo.html">
@@ -63,12 +63,12 @@ A photo album element including a slideshow view.
         </template>
       </div>
       <div id="header" horizontal="" end-justified="" layout="">
-        <paper-fab id="openButton" mini="" icon="launch" on-tap="openInNewTab"></paper-fab>
-        <paper-fab id="closeButton" mini="" icon="close" on-tap="dismiss"></paper-fab>
+        <paper-icon-button id="openButton" icon="launch" on-tap="openInNewTab"></paper-icon-button>
+        <paper-icon-button id="closeButton" icon="close" on-tap="dismiss"></paper-icon-button>
       </div>
       <div id="footer">{{ getFooterCaption( _currentSlide ) }}</div>
-      <paper-fab id="prevSlide" mini="" icon="arrow-back" on-tap="prevSlide"></paper-fab>
-      <paper-fab id="nextSlide" mini="" icon="arrow-forward" on-tap="nextSlide"></paper-fab>
+      <paper-icon-button id="prevSlide" icon="arrow-back" on-tap="prevSlide"></paper-icon-button>
+      <paper-icon-button id="nextSlide" icon="arrow-forward" on-tap="nextSlide"></paper-icon-button>
     </div>
   </template>
   <script>

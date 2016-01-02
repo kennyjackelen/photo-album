@@ -28,7 +28,7 @@
 
 #prevSlide, #nextSlide {
   position: fixed;
-  background-color: #333333;
+  color: rgba(255,255,255,0.75);
   top:  calc( 50% - 28px ) ;  /* button is 56 high */
   -webkit-transition: all .3s ease-in-out;
   -moz-transition: all .3s ease-in-out;
@@ -38,7 +38,7 @@
 }
 
 #closeButton, #openButton {
-  background-color: #333333;
+  color: rgba(255,255,255,0.75);
   float: right;
   margin: 16px;
 }
