@@ -55,7 +55,7 @@ A photo album element including a slideshow view.
       </template>
     </div>
     <div id="slideshow">
-      <div id="slides">
+      <div id="slides" on-track="handleTrack">
         <template is="dom-repeat" items="{{galleryModel}}">
           <div class="slide" data-src$="{{ item.src }}">
             <paper-spinner class="slide-loading" active$="{{ !item.imageLoaded }}"></paper-spinner>
@@ -75,6 +75,12 @@ A photo album element including a slideshow view.
     (function () {
       'use strict';
 
+      var slideState = {
+        NotSliding: 0,
+        SlideStarted: 1,
+        SlideInProgress: 2
+      };
+
       Polymer({
         is: 'photo-album',
         /*properties: {
@@ -84,18 +90,12 @@ A photo album element including a slideshow view.
           }
         },*/
         ready: function () {
-          this._sliding = 0;
+          this._sliding = slideState.NotSliding;
           this._startClientX = 0;
           this._startClientY = 0;
           this._startPixelOffset = 0;
           this._pixelOffset = 0;
           this.allThumbnailsLoaded = false;
-          this.$.slides.addEventListener('mousedown', this.slideStart.bind(this));
-          this.$.slides.addEventListener('touchstart', this.slideStart.bind(this));
-          this.$.slides.addEventListener('mouseup', this.slideEnd.bind(this));
-          this.$.slides.addEventListener('touchend', this.slideEnd.bind(this));
-          this.$.slides.addEventListener('mousemove', this.handleSlide.bind(this));
-          this.$.slides.addEventListener('touchmove', this.handleSlide.bind(this));
           this.ownerDocument.addEventListener('keyup', this.keypress.bind(this));
           window.addEventListener('resize', this.resize.bind(this));
           this._buildModel();
@@ -113,7 +113,7 @@ A photo album element including a slideshow view.
         },
         show: function () {
           this._visible = true;
-          this._sliding = 0;
+          this._sliding = slideState.NotSliding;
           this.set('$.slideshow.style.display', 'block');
           this._showControls();
         },
@@ -237,21 +237,20 @@ A photo album element including a slideshow view.
           this._noAnimate();
           this.goToSlide(this._currentSlide);
         },
-        slideStart: function (event) {
-          if (!this._visible) {
-            return;
-          }
-          event.preventDefault();
-          if (event.touches) {
-            event = event.touches[0];
-          }
-          if (this._sliding == 0) {
-            this._sliding = 1;
-            this._startClientX = event.clientX;
-            this._startClientY = event.clientY;
+        handleTrack: function (event) {
+          switch ( event.detail.state ) {
+            case 'start':
+              this._slideStart( event );
+              break;
+            case 'track':
+              this._slideTrack( event );
+              break;
+            case 'end':
+              this._slideEnd( event );
+              break;
           }
         },
-        handleSlide: function (event) {
+        _slideStart: function (event) {
           if (!this._visible) {
             return;
           }
@@ -259,14 +258,30 @@ A photo album element including a slideshow view.
           if (event.touches) {
             event = event.touches[0];
           }
-          var deltaSlide = event.clientX - this._startClientX;
-          if (this._sliding == 1 && deltaSlide != 0) {
-            this._sliding = 2;
+          if (this._sliding === slideState.NotSliding) {
+            this._sliding = slideState.SlideStarted;
+            this._startClientX = event.detail.x;
+            this._startClientY = event.detail.y;
+          }
+        },
+        _slideTrack: function (event) {
+          if (!this._visible) {
+            return;
+          }
+          event.preventDefault();
+          if (event.touches) {
+            event = event.touches[0];
+          }
+          var deltaSlide = event.detail.x - this._startClientX;
+          console.log( deltaSlide );
+          console.log( event.detail );
+          if (this._sliding === slideState.SlideStarted && deltaSlide !== 0) {
+            this._sliding = slideState.SlideInProgress;
             this._startPixelOffset = this._pixelOffset;
           }
-          if (this._sliding == 2) {
+          if (this._sliding === slideState.SlideInProgress) {
             var touchPixelRatio = 1;
-            if (this._currentSlide == 0 && event.clientX > this._startClientX || this._currentSlide == this.galleryModel.length - 1 && event.clientX < this._startClientX) {
+            if (this._currentSlide === 0 && event.detail.x > this._startClientX || this._currentSlide === this.galleryModel.length - 1 && event.detail.x < this._startClientX) {
               touchPixelRatio = 3;
             }
             this._pixelOffset = this._startPixelOffset + deltaSlide / touchPixelRatio;
@@ -274,7 +289,7 @@ A photo album element including a slideshow view.
             this._translate(this._pixelOffset);
           }
         },
-        slideEnd: function (event) {
+        _slideEnd: function (event) {
           var slideIndex;
           if (!this._visible) {
             return;
@@ -283,12 +298,12 @@ A photo album element including a slideshow view.
           if (event.touches) {
             event = event.touches[0];
           }
-          if (this._sliding == 1) {
-            this._sliding = 0;
+          if (this._sliding === slideState.SlideStarted) {
+            this._sliding = slideState.NotSliding;
             this._toggleControls();
           }
-          if (this._sliding == 2) {
-            this._sliding = 0;
+          if (this._sliding === slideState.SlideInProgress) {
+            this._sliding = slideState.NotSliding;
             if (this._pixelOffset < this._startPixelOffset) {
               slideIndex = this._currentSlide + 1;
             } else {
