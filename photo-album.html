@@ -75,12 +75,6 @@ A photo album element including a slideshow view.
     (function () {
       'use strict';
 
-      var slideState = {
-        NotSliding: 0,
-        SlideStarted: 1,
-        SlideInProgress: 2
-      };
-
       Polymer({
         is: 'photo-album',
         /*properties: {
@@ -90,7 +84,6 @@ A photo album element including a slideshow view.
           }
         },*/
         ready: function () {
-          this._sliding = slideState.NotSliding;
           this._startPixelOffset = 0;
           this._pixelOffset = 0;
           this.allThumbnailsLoaded = false;
@@ -111,7 +104,6 @@ A photo album element including a slideshow view.
         },
         show: function () {
           this._visible = true;
-          this._sliding = slideState.NotSliding;
           this.set('$.slideshow.style.display', 'block');
           this._showControls();
         },
