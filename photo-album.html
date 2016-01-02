@@ -91,8 +91,6 @@ A photo album element including a slideshow view.
         },*/
         ready: function () {
           this._sliding = slideState.NotSliding;
-          this._startClientX = 0;
-          this._startClientY = 0;
           this._startPixelOffset = 0;
           this._pixelOffset = 0;
           this.allThumbnailsLoaded = false;
@@ -238,81 +236,43 @@ A photo album element including a slideshow view.
           this.goToSlide(this._currentSlide);
         },
         handleTrack: function (event) {
+          if (!this._visible) {
+            return;
+          }
           switch ( event.detail.state ) {
             case 'start':
-              this._slideStart( event );
+              this._slideStart();
               break;
             case 'track':
               this._slideTrack( event );
               break;
             case 'end':
-              this._slideEnd( event );
+              this._slideEnd();
               break;
           }
         },
-        _slideStart: function (event) {
-          if (!this._visible) {
-            return;
-          }
-          event.preventDefault();
-          if (event.touches) {
-            event = event.touches[0];
-          }
-          if (this._sliding === slideState.NotSliding) {
-            this._sliding = slideState.SlideStarted;
-            this._startClientX = event.detail.x;
-            this._startClientY = event.detail.y;
-          }
+        _slideStart: function () {
+          this._startPixelOffset = this._pixelOffset;
         },
         _slideTrack: function (event) {
-          if (!this._visible) {
-            return;
+          var touchPixelRatio = 1;
+          if (this._currentSlide === 0 && event.detail.dx > 0 || this._currentSlide === this.galleryModel.length - 1 && event.detail.dx < 0) {
+            touchPixelRatio = 3;
           }
-          event.preventDefault();
-          if (event.touches) {
-            event = event.touches[0];
-          }
-          var deltaSlide = event.detail.x - this._startClientX;
-          console.log( deltaSlide );
-          console.log( event.detail );
-          if (this._sliding === slideState.SlideStarted && deltaSlide !== 0) {
-            this._sliding = slideState.SlideInProgress;
-            this._startPixelOffset = this._pixelOffset;
-          }
-          if (this._sliding === slideState.SlideInProgress) {
-            var touchPixelRatio = 1;
-            if (this._currentSlide === 0 && event.detail.x > this._startClientX || this._currentSlide === this.galleryModel.length - 1 && event.detail.x < this._startClientX) {
-              touchPixelRatio = 3;
-            }
-            this._pixelOffset = this._startPixelOffset + deltaSlide / touchPixelRatio;
-            this._noAnimate();
-            this._translate(this._pixelOffset);
-          }
+          this._pixelOffset = this._startPixelOffset + event.detail.dx / touchPixelRatio;
+          this._noAnimate();
+          this._translate(this._pixelOffset);
         },
-        _slideEnd: function (event) {
+        _slideEnd: function () {
           var slideIndex;
-          if (!this._visible) {
-            return;
+          if (this._pixelOffset < this._startPixelOffset) {
+            slideIndex = this._currentSlide + 1;
+          } else {
+            slideIndex = this._currentSlide - 1;
           }
-          event.preventDefault();
-          if (event.touches) {
-            event = event.touches[0];
-          }
-          if (this._sliding === slideState.SlideStarted) {
-            this._sliding = slideState.NotSliding;
-            this._toggleControls();
-          }
-          if (this._sliding === slideState.SlideInProgress) {
-            this._sliding = slideState.NotSliding;
-            if (this._pixelOffset < this._startPixelOffset) {
-              slideIndex = this._currentSlide + 1;
-            } else {
-              slideIndex = this._currentSlide - 1;
-            }
-            slideIndex = Math.min(Math.max(slideIndex, 0), this.galleryModel.length - 1);
-            this._animate();
-            this.goToSlide(slideIndex);
-          }
+          slideIndex = Math.min(Math.max(slideIndex, 0), this.galleryModel.length - 1);
+          this._animate();
+          this.goToSlide(slideIndex);
         },
         _toggleControls: function () {
           if (this._showingControls) {
